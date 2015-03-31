@@ -91,15 +91,15 @@ unsigned long grey(SDL_Surface *img, unsigned w, unsigned h)
 void integrale(SDL_Surface *img, unsigned long integ[img->w][img->h])
 {
   unsigned w, h;
-  for (w = 0; w < (unsigned) img->w; w++)
+  for (h = 0; h < (unsigned) img->h; h++)
   {
-    for (h = 0; w < (unsigned) img->h; h++)
+    for (w = 0; w < (unsigned) img->w; w++)
     {
-      integ[w][h] = grey(img, w, h);
+      integ[h][w] = grey(img, w, h);
       if(w)
-        integ[w][h] += integ[w-1][h];
+        integ[h][w] += integ[h][w-1];
       if(h)
-        integ[w][h] += integ[w][h-1];
+        integ[h][w] += integ[h-1][w];
     }
   }
 

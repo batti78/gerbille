@@ -15,7 +15,7 @@ SDL_Surface* load_image(char *path);
 
 void init_sdl(void);
 
-void integrale(SDL_Surface *img, unsigned long integ[img->w][img->h]); 
+void integrale(SDL_Surface *img, unsigned long integ[img->h][img->w]); 
 
 #endif
 

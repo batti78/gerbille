@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     init_sdl();  
     SDL_Surface *img = load_image(path);
     display_image(img);
-    unsigned long integ[img->w][img->h];
+    unsigned long integ[img->h][img->w];
     integrale(img, integ);
     display_image(img);
     return 0; 

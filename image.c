@@ -74,28 +74,45 @@ void init_sdl(void) {
     }
 }
 
-unsigned long grey(SDL_Surface *img, unsigned w, unsigned h)
+void grey(SDL_Surface *img)
 {
-  Uint32 pixel = getpixel(img, w, h);
-  Uint8 r = 0;
-  Uint8 g = 0;
-  Uint8 b = 0;
-  Uint8 med = 0;
-  SDL_GetRGB(pixel, img->format, &r, &g, &g);
-  med = 0.3 * r + 0.59 * g + 0.11 * b;
-  r = g = b = med;
-  putpixel(img, w, h, SDL_MapRGB(img->format, r, g, b));
-  return ((unsigned long) med);
+  Uint8 r, g, b, med, max = 0;
+  Uint8 min = 255;
+  unsigned x,y;
+  for (x = 0; x < (unsigned) img->h; x++)
+  {
+    for (y = 0; y < (unsigned) img->w; y++)
+    {
+      SDL_GetRGB(getpixel(img, y, x), img->format, &r, &g, &b);
+      med = 0.3 * r + 0.59 * g + 0.11 * b;
+      r = g = b = med;
+      max = (max < med ? med : max);
+      min = (min > med ? med : min);
+      putpixel(img, y, x, SDL_MapRGB(img->format, r, g, b));
+    }
+  }
+  for (x = 0; x < (unsigned) img->h; x++)
+  {
+    for (y = 0; y < (unsigned) img->w; y++)
+    {
+      SDL_GetRGB(getpixel(img, y, x), img->format, &r, &g, &b);
+      med = (b - min) * 255 / (max - min);
+      putpixel(img, y, x, SDL_MapRGB(img->format, med, med ,med));
+    }
+  }
 }
 
-void integrale(SDL_Surface *img, unsigned long integ[img->w][img->h])
+
+
+void integrale(SDL_Surface *img, unsigned long integ[img->h][img->w])
 {
+  grey(img);
   unsigned w, h;
   for (h = 0; h < (unsigned) img->h; h++)
   {
     for (w = 0; w < (unsigned) img->w; w++)
     {
-      integ[h][w] = grey(img, w, h);
+      integ[h][w] = getpixel(img, w, h);
       if(w)
         integ[h][w] += integ[h][w-1];
       if(h)

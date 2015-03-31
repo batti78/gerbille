@@ -74,19 +74,32 @@ void init_sdl(void) {
     }
 }
 
-unsigned long[][] integrale(SDL_Surface *img)
+unsigned long grey(SDL_Surface *img, unsigned w, unsigned h)
 {
-  unsigned integ[(img->w),(img->h)] = malloc(integ);
-  int w, h;
-  for (w = 0; w < img->w; w++)
+  Uint32 pixel = getpixel(img, w, h);
+  Uint8 r = 0;
+  Uint8 g = 0;
+  Uint8 b = 0;
+  Uint8 med = 0;
+  SDL_GetRGB(pixel, img->format, &r, &g, &g);
+  med = 0.3 * r + 0.59 * g + 0.11 * b;
+  r = g = b = med;
+  putpixel(img, w, h, SDL_MapRGB(img->format, r, g, b));
+  return ((unsigned long) med);
+}
+
+void integrale(SDL_Surface *img, unsigned long integ[img->w][img->h])
+{
+  unsigned w, h;
+  for (w = 0; w < (unsigned) img->w; w++)
   {
-    for (h = 0; w < img->h; h++)
+    for (h = 0; w < (unsigned) img->h; h++)
     {
-      integ[w][h] = (unsigned long)getpixel(img, w, h);
-      if(w != 0)
-        integ[w][h] += integ[w-1,h];
-      if(h != 0)
-        integ[w][h] += integ[w,h-1];
+      integ[w][h] = grey(img, w, h);
+      if(w)
+        integ[w][h] += integ[w-1][h];
+      if(h)
+        integ[w][h] += integ[w][h-1];
     }
   }
 

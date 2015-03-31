@@ -11,7 +11,8 @@ int main(int argc, char *argv[])
     char *path = argv[1]; 
     init_sdl();  
     SDL_Surface *img = load_image(path);
-    integrale(img);
+    unsigned long integ[img->w][img->h];
+    integrale(img, integ);
     return 0; 
                                         }
 }

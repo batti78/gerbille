@@ -11,6 +11,44 @@ Uint8* pixelref(SDL_Surface *surf, unsigned x, unsigned y) {
             return (Uint8*)surf->pixels + y * surf->pitch + x * bpp;
 }
 
+void wait_for_keypressed(void) {
+    SDL_Event             event;
+      for (;;) {
+        SDL_PollEvent( &event );
+        switch (event.type) {
+          case SDL_KEYDOWN: return; 
+          default: break;
+        }
+      }
+}
+
+void init_sdl(void) {
+  if( SDL_Init(SDL_INIT_VIDEO)==-1 ) {
+    errx(1,"Could not initialize SDL: %s.\n", SDL_GetError());
+  }
+}
+
+SDL_Surface* load_image(char *path) {
+  SDL_Surface          *img;
+  img = IMG_Load(path);
+  if (!img)
+    errx(3, "can't load %s: %s", path, IMG_GetError());
+  return img;
+}
+
+SDL_Surface* display_image(SDL_Surface *img) {
+  SDL_Surface          *screen;
+  screen = SDL_SetVideoMode(img->w, img->h, 0, SDL_SWSURFACE|SDL_ANYFORMAT);
+  if ( screen == NULL ) {
+    errx(1, "Couldn't set %dx%d video mode: %s\n",
+        img->w, img->h, SDL_GetError());
+      }
+  if(SDL_BlitSurface(img, NULL, screen, NULL) < 0)
+    warnx("BlitSurface error: %s\n", SDL_GetError());
+  SDL_UpdateRect(screen, 0, 0, img->w, img->h);
+  wait_for_keypressed();
+  return screen;
+}
 
 Uint32 getpixel(SDL_Surface *surface, unsigned x, unsigned y) 
 {
@@ -30,16 +68,6 @@ Uint32 getpixel(SDL_Surface *surface, unsigned x, unsigned y)
   }
   return 0;
 }
-
-
-SDL_Surface* load_image(char *path) {
-  SDL_Surface          *img;
-  img = IMG_Load(path);
-  if (!img)
-    errx(3, "can't load %s: %s", path, IMG_GetError());
-  return img;
-}
-
 
 void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
   Uint8 *p = pixelref(surface, x, y);
@@ -68,17 +96,13 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
   }
 }
 
-void init_sdl(void) {
-  if( SDL_Init(SDL_INIT_VIDEO)==-1 ) {
-    errx(1,"Could not initialize SDL: %s.\n", SDL_GetError());
-    }
-}
-
-void grey(SDL_Surface *img)
+void normalize(SDL_Surface *img)
 {
   Uint8 r, g, b, med, max = 0;
   Uint8 min = 255;
   unsigned x,y;
+  display_image(img);
+  // put picture in grey level and get min and manx values
   for (x = 0; x < (unsigned) img->h; x++)
   {
     for (y = 0; y < (unsigned) img->w; y++)
@@ -91,6 +115,8 @@ void grey(SDL_Surface *img)
       putpixel(img, y, x, SDL_MapRGB(img->format, r, g, b));
     }
   }
+  display_image(img);
+  // normalization of the picture depending on min and max
   for (x = 0; x < (unsigned) img->h; x++)
   {
     for (y = 0; y < (unsigned) img->w; y++)
@@ -100,24 +126,24 @@ void grey(SDL_Surface *img)
       putpixel(img, y, x, SDL_MapRGB(img->format, med, med ,med));
     }
   }
+  display_image(img);
 }
 
 
 
 void integrale(SDL_Surface *img, unsigned long integ[img->h][img->w])
 {
-  grey(img);
+  normalize(img);
   unsigned w, h;
   for (h = 0; h < (unsigned) img->h; h++)
   {
     for (w = 0; w < (unsigned) img->w; w++)
     {
-      integ[h][w] = getpixel(img, w, h);
-      if(w)
-        integ[h][w] += integ[h][w-1];
-      if(h)
-        integ[h][w] += integ[h-1][w];
+      integ[h][w] = getpixel(img, w, h)/16777216;
+      //if(w)
+      //  integ[h][w] += integ[h][w-1];
+      //if(h)
+      //  integ[h][w] += integ[h-1][w];
     }
   }
-
 }

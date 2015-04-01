@@ -4,6 +4,7 @@
 #include<SDL_image.h>
 #include<SDL/SDL.h>
 #include"image.c"
+#include"haar.c"
 
 int main(int argc, char *argv[])
 {

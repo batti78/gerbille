@@ -159,7 +159,7 @@ long haar5(struct rect *rect);
 
 //fonction retournant un tableau de haar-features et prenant en paramametre la matrice de l'image intégrale, sa largeur et sa hauteur) 
 
-struct haar *array(unsigned img_w, unsigned img_h, unsigned long **integ);
+struct haar *array(int img_w, int img_h, unsigned long **integ);
 /*{
   int x, y, w, h, haar;
   unsigned long n = 0; 

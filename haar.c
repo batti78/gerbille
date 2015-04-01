@@ -174,30 +174,30 @@ struct haar *array(int img_w, int img_h, unsigned long **integ)
             switch (haar)
             {
             case 0 :
-              array[n]->result = haar1(r);
-              array[n]->haar = 1; 
+              array[n].result = haar1(r);
+              array[n].haar = 1; 
               break;
             case 1 :
-              array[n]->result = haar2(r);
-              array[n]->haar = 2; 
+              array[n].result = haar2(r);
+              array[n].haar = 2; 
               break;
             case 3 :
-              array[n]->result = haar3(r);
-              array[n]->haar = 3; 
+              array[n].result = haar3(r);
+              array[n].haar = 3; 
               break;
             case 4 :
-              array[n]->result = haar4(r);
-              array[n]->haar = 4; 
+              array[n].result = haar4(r);
+              array[n].haar = 4; 
               break;
             case 5 :
-              array[n]->result = haar5(r); 
-              array[n]->haar = 5; 
+              array[n].result = haar5(r); 
+              array[n].haar = 5; 
               break;
             }
-            array[n]->x = x;
-            array[n]->y = y;
-            array[n]->size_h = h;
-            array[n]->size_w = w; 
+            array[n].x = x;
+            array[n].y = y;
+            array[n].size_h = h;
+            array[n].size_w = w; 
             n++; 
           }
         }

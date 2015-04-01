@@ -15,9 +15,6 @@ int main(int argc, char *argv[])
     SDL_Surface *img = load_image(path);
     unsigned long integ[img->h][img->w];
     integrale(img, integ);
-    for (unsigned i = 100;i<150;i++)
-      printf("%lu, ",integ[i][i]);
-    printf("\n");
     return 0; 
    }
 }

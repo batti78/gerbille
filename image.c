@@ -96,7 +96,7 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
   }
 }
 
-void normalize(SDL_Surface *img)
+void integrale(SDL_Surface *img, unsigned long integ[img->h][img->w])
 {
   Uint8 r, g, b, med, max = 0;
   Uint8 min = 255;
@@ -123,27 +123,13 @@ void normalize(SDL_Surface *img)
     {
       SDL_GetRGB(getpixel(img, y, x), img->format, &r, &g, &b);
       med = (b - min) * 255 / (max - min);
+      integ[x][y] = med;
       putpixel(img, y, x, SDL_MapRGB(img->format, med, med ,med));
+      if(y)
+        integ[x][y] += integ[x][y-1];
+      if(x)
+        integ[x][y] += integ[x-1][y];
     }
   }
   display_image(img);
-}
-
-
-
-void integrale(SDL_Surface *img, unsigned long integ[img->h][img->w])
-{
-  normalize(img);
-  unsigned w, h;
-  for (h = 0; h < (unsigned) img->h; h++)
-  {
-    for (w = 0; w < (unsigned) img->w; w++)
-    {
-      integ[h][w] = getpixel(img, w, h)/16777216;
-      //if(w)
-      //  integ[h][w] += integ[h][w-1];
-      //if(h)
-      //  integ[h][w] += integ[h-1][w];
-    }
-  }
-}
+}  

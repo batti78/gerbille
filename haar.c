@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include"haar.h"
+#include"image.c" 
 
 
 //Structure contenue dans la liste de Haar-feature obtenue par la fonction to list. 
@@ -128,7 +129,7 @@ unsigned long X(struct rect *rect) {
 //On passe au calcule des haar feature à l'aide des valeur intégrales ci-dessus. 
 
 long haar1(struct rect *rect) {
-  return (- A(rect) + B(rect) + C(rect) - D(rect) + 2*H(rect) + 2*E(rect));
+  return (- A(rect) + B(rect) + C(rect) - D(rect) + 2*H(rect) + 2*F(rect));
 }
 
 long haar2(struct rect *rect) {
@@ -136,7 +137,7 @@ long haar2(struct rect *rect) {
 }
 
 long haar3(struct rect *rect) {
-  return (3*N(rect) + A(rect) - 3*I(rect) - D(rect) + L(rect) + 3*J(rect) - B(rect) - 3*M(rect));
+  return (3*N(rect) + A(rect) - 3*I(rect) - D(rect) + C(rect) + 3*J(rect) - B(rect) - 3*M(rect));
 }
 
 long haar4(struct rect *rect) {
@@ -147,13 +148,16 @@ long haar5(struct rect *rect) {
   return (- 4*X(rect) + 2*H(rect) + 2*E(rect) + 2*F(rect) + 2*G(rect) - A(rect) - B(rect) - C(rect) - D(rect));
       }
 
-//fonction retournant un tableau de haar-features et prenant en paramametre la matrice de l'image intégrale, sa largeur et sa hauteur) 
 
-struct haar *array(int img_w, int img_h, unsigned long **integ)
+
+//fonction retournant un tableau de haar-features et prenant en paramametre la matrice de l'image intégrale, sa largeur et sa hauteur) 
+// (!) Plus utile, une partie bougé en image.c, l'autre dans la fonction ci-dessous. 
+/*
+struct haar *array(unsigned long **integ)
 {
   int x, y, w, h, haar;
   unsigned long n = 0; 
-  struct haar *array = NULL; 
+  unsigned *array = NULL; 
   struct rect *r  = malloc(sizeof(struct rect)); 
   r->integ = integ;
   for (y = 0; y < (img_h - 24); y++)
@@ -205,4 +209,57 @@ struct haar *array(int img_w, int img_h, unsigned long **integ)
     }
   }
   return array;
+}
+
+*/
+
+
+
+//return les 160 000 feature d'une image 24.24. 
+
+int haar24(unsigned long img[24][24], unsigned *res) 
+{
+  int i, j, size, haar;
+  long n = 0;
+  struct rect haar_r;
+  unsigned *res = NULL; 
+  haar_r.img_h = haar_r.img_w = 24; 
+  haar_r.integ = img; 
+  for (i = 0; i < 22; i++)
+  {
+    haar_r.x = i;
+    for(j = 0; j < 22; j++) 
+    {
+      haar_r.y = j;  
+      for(size = 2; size < 24; size ++)
+      {
+        haar_r.size_w = haar_r.size_y = size; 
+        for(haar = 0; haar < 5; haar++)
+        {
+          res = realloc(res, sizeof(res) + sizeof(unsigned)); 
+          switch (haar)
+            {
+              case 0 :
+                res[n] = haar1(r); 
+                break;
+              case 1 :
+                res[n] = haar2(r); 
+                break;
+              case 3 :
+                if (size >= 3)
+                  res[n] = haar3(r); 
+                break;
+              case 4 :
+                if (size >= 3)
+                  res[n] = haar4(r); 
+                break;
+              case 5 :
+                res[n] = haar5(r); 
+                break;
+            }
+          n++; 
+        }
+      }
+    }
+  }
 }

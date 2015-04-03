@@ -14,7 +14,9 @@ struct haar{
 };
 
 //structure déffinissant le rectangle dans lequel sont composé les haar-features. 
+//bougé dans image.h
 
+/*
 struct rect{
   int x; 
   int y;
@@ -24,6 +26,7 @@ struct rect{
   int img_h;
   unsigned long **integ;
 };
+*/
 
 
 //Deffinition des différents entiers qui compose de réctangle dans lequel sont calculé les haar-features. 

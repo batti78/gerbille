@@ -96,13 +96,15 @@ void putpixel(SDL_Surface *surface, unsigned x, unsigned y, Uint32 pixel) {
   }
 }
 
+// convertie une image en image integrale normalisée et remplie un tableau de la dimension de l image avec les valeurs integrales
+
 void integrale(SDL_Surface *img, unsigned long integ[img->h][img->w])
 {
   Uint8 r, g, b, med, max = 0;
   Uint8 min = 255;
   unsigned x,y;
   display_image(img);
-  // put picture in grey level and get min and manx values
+  // put picture in grey level and get min and max values
   for (x = 0; x < (unsigned) img->h; x++)
   {
     for (y = 0; y < (unsigned) img->w; y++)

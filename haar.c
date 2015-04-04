@@ -150,26 +150,26 @@ long haar5(struct rect *rect) {
 
 
 
-//fonction retournant un tableau de haar-features et prenant en paramametre la matrice de l'image intégrale, sa largeur et sa hauteur) 
-// (!) Plus utile, une partie bougé en image.c, l'autre dans la fonction ci-dessous. 
-/*
-struct haar *array(unsigned long **integ)
+//fonction retournant un tableau de haar-features et prenant en paramametre la matrice 24*24 de l'image intégrale. 
+
+struct haar *array(unsigned long integ[24][24], unsigned *nb)
 {
   int x, y, w, h, haar;
   unsigned long n = 0; 
   unsigned *array = NULL; 
-  struct rect *r  = malloc(sizeof(struct rect)); 
+  struct rect *r; 
   r->integ = integ;
-  for (y = 0; y < (img_h - 24); y++)
+  r->img_w = r->img_h = 24; 
+  for (y = 0; y < 24; y++)
   {
     r->y = y; 
-    for(x = 0; x < (img_w - 24); x++)
+    for(x = 0; x < 24; x++)
     {
       r->x = x; 
-      for (h = 24; h < img_h; h = (h/4)*5)
+      for (h = 1; h < 24; h++)
       {
         r->size_h = h; 
-        for(w = 24; h < img_w; w = (w/4)*5)
+        for(w = 1; h < 24; w++)
         {
           r->size_w = w; 
           for (haar = 0; haar < 5; haar++)
@@ -178,88 +178,53 @@ struct haar *array(unsigned long **integ)
             switch (haar)
             {
             case 0 :
-              array[n].result = haar1(r);
-              array[n].haar = 1; 
-              break;
+              if (h > 1 && (h % 2) == 0 )
+              {
+                array[n].result = haar1(r);
+                array[n]->haar = 1; 
+                break;
+              }
             case 1 :
-              array[n].result = haar2(r);
-              array[n].haar = 2; 
-              break;
+              if(w>1 && (w%2) == 0)
+              {
+                array[n]->result = haar2(r);
+                array[n]->haar = 2; 
+                break;
+              }
             case 3 :
-              array[n].result = haar3(r);
-              array[n].haar = 3; 
-              break;
+              if(w>2 && (w%3) == 0)
+              {
+                array[n]->result = haar3(r);
+                array[n]->haar = 3; 
+                break;
+              }
             case 4 :
-              array[n].result = haar4(r);
-              array[n].haar = 4; 
-              break;
+              if(h>2 && (h%3) == 0)
+              {
+                array[n]->result = haar4(r);
+                array[n]->haar = 4; 
+                break;
+              }
             case 5 :
-              array[n].result = haar5(r); 
-              array[n].haar = 5; 
-              break;
+              if (h>1 && w>1 && (h%2) == (w%2) == 0)
+              {
+                array[n]->result = haar5(r); 
+                array[n]->haar = 5; 
+                break;
+              }
             }
-            array[n].x = x;
-            array[n].y = y;
-            array[n].size_h = h;
-            array[n].size_w = w; 
+            array[n]->x = x;
+            array[n]->y = y;
+            array[n]->size_h = h;
+            array[n]->size_w = w; 
             n++; 
           }
         }
       }
     }
   }
+  nb = &n;  
   return array;
 }
 
-*/
 
-
-
-//return les 160 000 feature d'une image 24.24. 
-
-int haar24(unsigned long img[24][24], unsigned *res) 
-{
-  int i, j, size, haar;
-  long n = 0;
-  struct rect haar_r;
-  unsigned *res = NULL; 
-  haar_r.img_h = haar_r.img_w = 24; 
-  haar_r.integ = img; 
-  for (i = 0; i < 22; i++)
-  {
-    haar_r.x = i;
-    for(j = 0; j < 22; j++) 
-    {
-      haar_r.y = j;  
-      for(size = 2; size < 24; size ++)
-      {
-        haar_r.size_w = haar_r.size_y = size; 
-        for(haar = 0; haar < 5; haar++)
-        {
-          res = realloc(res, sizeof(res) + sizeof(unsigned)); 
-          switch (haar)
-            {
-              case 0 :
-                res[n] = haar1(r); 
-                break;
-              case 1 :
-                res[n] = haar2(r); 
-                break;
-              case 3 :
-                if (size >= 3)
-                  res[n] = haar3(r); 
-                break;
-              case 4 :
-                if (size >= 3)
-                  res[n] = haar4(r); 
-                break;
-              case 5 :
-                res[n] = haar5(r); 
-                break;
-            }
-          n++; 
-        }
-      }
-    }
-  }
-}

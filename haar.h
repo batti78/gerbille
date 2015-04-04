@@ -16,7 +16,7 @@ struct haar{
 //structure déffinissant le rectangle dans lequel sont composé les haar-features. 
 //bougé dans image.h
 
-/*
+
 struct rect{
   int x; 
   int y;
@@ -24,9 +24,9 @@ struct rect{
   int size_h; 
   int img_w;
   int img_h;
-  unsigned long **integ;
+  unsigned long integ[img_w][img_h];
 };
-*/
+
 
 
 //Deffinition des différents entiers qui compose de réctangle dans lequel sont calculé les haar-features. 
@@ -162,7 +162,7 @@ long haar5(struct rect *rect);
 
 //fonction retournant un tableau de haar-features et prenant en paramametre la matrice de l'image intégrale, sa largeur et sa hauteur) 
 
-struct haar *array(int img_w, int img_h, unsigned long **integ);
+struct haar *array(unsigned long integ[24][24], unsigned *nb);
 /*{
   int x, y, w, h, haar;
   unsigned long n = 0; 
